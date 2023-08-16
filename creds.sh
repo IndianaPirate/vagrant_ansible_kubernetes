@@ -12,4 +12,4 @@ apt install ansible -y
 apt install git -y
 git clone https://github.com/IndianaPirate/vagrant_ansible_kubernetes.git
 cd vagrant_ansible_kubernetes
-ansible-galaxy playbook_node.yml
+ansible-galaxy playbook_node.yml -i inventory
