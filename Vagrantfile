@@ -27,7 +27,6 @@ Vagrant.configure(2) do |config|
     node.vm.network "private_network", ip: "172.16.16.100"
   
     node.vm.provider :libvirt do |v|
-      v.name    = "kmaster"
       v.memory  = MEMORY_MASTER_NODE
       v.cpus    = CPUS_MASTER_NODE
     end
@@ -55,7 +54,6 @@ Vagrant.configure(2) do |config|
       node.vm.network "private_network", ip: "172.16.16.10#{i}"
 
       node.vm.provider :virtualbox do |v|
-        v.name    = "kworker#{i}"
         v.memory  = MEMORY_WORKER_NODE
         v.cpus    = CPUS_WORKER_NODE
       end
