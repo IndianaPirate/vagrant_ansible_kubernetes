@@ -10,5 +10,6 @@ echo "export TERM=xterm" >> /etc/bash.bashrc
 apt update -y 
 apt install ansible -y
 apt install git -y
-git clone https://github.com/IndianaPirate/vagrant_ansible_kubernetes.git 
+git clone https://github.com/IndianaPirate/vagrant_ansible_kubernetes.git
+cd vagrant_ansible_kubernetes
 ansible-galaxy playbook_node.yml
