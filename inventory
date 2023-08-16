@@ -1,0 +1,10 @@
+[node_all]
+172.16.16.100 ansible_ssh_user=kubeadmin ansible_ssh_pass=kubeadmin
+172.16.16.101 ansible_ssh_user=kubeadmin ansible_ssh_pass=kubeadmin
+
+[master]
+172.16.16.100 ansible_ssh_user=kubeadmin ansible_ssh_pass=kubeadmin
+
+[worker]
+172.16.16.101 ansible_ssh_user=kubeadmin ansible_ssh_pass=kubeadmin
+

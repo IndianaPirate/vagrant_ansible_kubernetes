@@ -1,0 +1,70 @@
+- name: Install les dependences des nodes
+  hosts: node_all
+  become: yes
+  tasks:
+    - name: Désactive SWAP
+      shell: |
+        sed -i '/swap/d' /etc/fstab
+        swapoff -a
+    - name: Désactive Firewall
+      shell: |
+        systemctl disable --now ufw >/dev/null 2>&1
+    - name: Active et charge les modules Kernel
+      shell: |
+        cat >>/etc/modules-load.d/containerd.conf<<EOF
+        overlay
+        br_netfilter
+        EOF
+        modprobe overlay
+        modprobe br_netfilter
+    - name: Ajouté parametre Kernel
+      shell: |
+        cat >>/etc/sysctl.d/kubernetes.conf<<EOF
+        net.bridge.bridge-nf-call-ip6tables = 1
+        net.bridge.bridge-nf-call-iptables  = 1
+        net.ipv4.ip_forward                 = 1
+        EOF
+        sysctl --system >/dev/null 2>&1
+    - name: Install dependences containerd
+      apt:
+        name: ca-certificates curl gnupg lsb-release
+        update_cache: yes
+    - name: Télecharge keys
+      shell: |
+        mkdir -p /etc/apt/keyrings
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list
+
+    - name: Install containerd
+      apt: |
+        name: containerd
+        update_cache: yes
+    - name: Configuration containerd
+      shell: |
+        containerd config default > /etc/containerd/config.toml
+        sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/g' /etc/containerd/config.toml
+    - name: Restart containerd
+      service:
+        name: containerd
+        state: restarted
+    - name: Active containerd
+      service:
+        name: containerd
+        enabled: yes
+
+    - name: Ajoute apt repo pour K8S
+      shell: |
+        curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+        apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+    - name: Update repos et install les composant k8s
+      apt:
+        name: kubeadm=1.26.0-00 kubelet=1.26.0-00 kubectl=1.26.0-00
+        update_cache: yes
+    - name: Mettre à jour le fichier /etc/hosts
+      shell: |
+        cat >>/etc/hosts<<EOF
+        172.16.16.100   kmaster.example.com     kmaster
+        172.16.16.101   kworker1.example.com    kworker1
+        172.16.16.102   kworker2.example.com    kworker2
+        EOF

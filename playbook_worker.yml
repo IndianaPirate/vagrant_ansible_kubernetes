@@ -1,0 +1,10 @@
+- name: Joindre le Worker au Cluster K8S
+  hosts: worker
+  become: yes
+  tasks:
+    - name: Install sshpass
+      apt: sshpass
+    - name: Joindre le cluster K8S
+      shell: sshpass -p "kubeadmin" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no kmaster.example.com:/joincluster.sh /joincluster.sh
+    - name: Execute joincluster.sh
+      shell: bash /joincluster.sh

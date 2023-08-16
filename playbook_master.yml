@@ -1,0 +1,12 @@
+- name: Configure Master Node
+  hosts: master
+  become: yes
+  tasks:
+    - name: Pull les conteneurs requis
+      shell: kubeadm config images pull
+    - name: Initialise le cluster k8s
+      shell: kubeadm init --apiserver-advertise-address=172.16.16.100 --pod-network-cidr=192.168.0.0/16 >> /root/kubeinit.log
+    - name: Déploiement du reseau calico
+      shell: kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f https://docs.projectcalico.org/v3.18/manifests/calico.yaml
+    - name: Genere et enregistre la commande join dans le fichier /join.sh
+      shell: kubeadm token create --print-join-command > /joincluster.sh
