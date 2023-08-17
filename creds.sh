@@ -1,7 +1,7 @@
 echo "[+] Update repos"
 apt update -y 
 echo "[+] Install ansible"
-apt install ansible -y
+apt install ansible -y 
 echo "[+] Install git"
 apt install git -y
 echo "[+] Fix broken install"
@@ -19,4 +19,4 @@ echo "[+] Clone repository"
 git clone https://github.com/IndianaPirate/vagrant_ansible_kubernetes.git
 cd vagrant_ansible_kubernetes
 echo "[+] Ansible Galaxy"
-ansible-galaxy playbook_node.yml -i inventory
+ansible-galaxy -i inventory playbook_node.yml

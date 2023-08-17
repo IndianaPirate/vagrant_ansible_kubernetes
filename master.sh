@@ -1,3 +1,3 @@
 git clone https://github.com/IndianaPirate/vagrant_ansible_kubernetes.git
 cd vagrant_ansible_kubernetes
-ansible-playbook playbook_master.yml -i inventory
+ansible-playbook -i inventory playbook_master.yml
